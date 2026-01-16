@@ -1,0 +1,268 @@
+% filepath: h:\OneDrive - West Point\22.05 PH201\1. Lesson Content\26-2 Worksheets\Ionoscope-lab.tex
+\documentclass[12pt,addpoints]{exam}
+
+% --- Packages ---
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\sisetup{per-mode=symbol}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\geometry{margin=0.75in}
+
+% image path
+\graphicspath{{img/}}
+
+\makeatletter
+\@ifundefined{WITHANSWERS}{\noprintanswers}{\printanswers}
+\makeatother
+
+\renewcommand{\familydefault}{\sfdefault}
+\renewcommand{\thequestion}{\alph{question}}
+\renewcommand{\thepartno}{\arabic{partno}}
+
+\footer{PH201}{\thepage}{}
+\header{IonoScope: Measuring the Ionosphere with GNSS Signals}{}{Name: \underline{\hspace{5cm}}}
+
+\setlength{\parskip}{0.4em}
+
+\begin{document}
+
+\section{IonoScope: Measuring the Ionosphere with GNSS Signals}
+
+\subsection{Learning Objectives}
+By the end of this activity you should be able to:
+\begin{itemize}
+    \item Interpret real GNSS satellite measurement data.
+    \item Explain how signal travel time depends on the ionosphere.
+    \item Compute and interpret Total Electron Content (TEC).
+    \item Perform basic statistical analysis and visualization in Excel.
+\end{itemize}
+
+\subsection{Background (from the IonoScope App)}
+Smartphones can measure the travel time of radio signals transmitted by navigation satellites.
+Signals at different frequencies (L1 and L5) travel at slightly different speeds through the ionosphere due to dispersion.
+This delay can be used to estimate the number of free electrons along the path between the satellite and the receiver.
+
+\textbf{Key idea:}
+\[
+\text{Different frequencies} \Rightarrow \text{different delays} \Rightarrow \text{estimate electron density (TEC)}.
+\]
+
+\subsection{Part I -- Understanding the Dataset}
+
+You are given a CSV file exported from IonoScope containing measurements from multiple satellites.
+
+\begin{questions}
+
+\question How many unique satellites appear in the dataset?
+
+\begin{solution}[2cm]
+\textbf{12 unique satellites} (using unique pairs of svId + constellation)
+\end{solution}
+
+\question Select one satellite with at least 30 measurements. Record the Satellite ID (svId) and GNSS constellation (GPS, Galileo, etc.).
+
+\begin{solution}[2cm]
+\textbf{Satellite ID:} 36
+
+\textbf{Constellation:} GALILEO
+\end{solution}
+
+\question Go online and determine which country or organization operates this constellation.
+
+\begin{solution}[2cm]
+\textbf{European Union / European Space Agency (ESA)}
+\end{solution}
+
+\end{questions}
+
+\subsection{Part II -- Signal Delay Verification}
+
+For your selected satellite, choose one measurement (one row).
+
+\begin{questions}
+
+\question Compute the transit time difference:
+\[
+\Delta t = t_{L5} - t_{L1}
+\]
+If the transit difference is positive that is a physically meaningful and expected result. If negative it indicates the satellite may have a bias adjustment and shows some of the limitations and challenges of using real-world smartphone data.
+\begin{solution}[4cm]
+For Galileo-36 (example row):
+\begin{align*}
+    t_{L1} &= 77{,}998{,}233 \text{ ns} \\
+    t_{L5} &= 77{,}998{,}247 \text{ ns} \\
+    \Delta t &= t_{L5} - t_{L1} = 77{,}998{,}247 - 77{,}998{,}233 = \boxed{+14 \text{ ns}}
+\end{align*}
+This positive value is physically meaningful: the L5 signal (lower frequency) travels slower through the ionosphere than L1 (higher frequency), as expected from dispersion.
+\end{solution}
+
+\question Compare your result with the provided \texttt{signalDelayNanos} column. Do they match?
+
+\begin{solution}[2cm]
+Dataset value: \texttt{signalDelayNanos} $= 14$ ns
+
+$\checkmark$ Match confirmed.
+\end{solution}
+
+\question Report the carrier frequencies for L1 and L5 (in MHz).
+
+\begin{solution}[2cm]
+\begin{center}
+\begin{tabular}{lc}
+\toprule
+\textbf{Signal} & \textbf{Frequency (MHz)} \\
+\midrule
+L1 & 1575.42 \\
+L5 & 1176.45 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{solution}
+
+\end{questions}
+
+\subsection{Part III -- TEC Calculation}
+
+The dataset includes a column called \texttt{tecApproximate}.
+
+\begin{questions} 
+
+\question Using the frequency values for L1 and L5 and your computed $\Delta t$, show how TEC is calculated.
+
+\begin{solution}[6cm]
+The dispersive delay relation is:
+\[
+\Delta t = \frac{40.3}{c} \cdot 5\text{TEC} \cdot \left( \frac{1}{f_{L1}^2} - \frac{1}{f_{L1}^2} \right)
+\]
+
+Solving for TEC:
+\[
+\boxed{\text{TEC} = \frac{\Delta t_{L5-L1} \cdot c}{40.3 \left( \dfrac{1}{f_{L5}^2} - \dfrac{1}{f_{L1}^2} \right)}}
+\]
+
+Where:
+\begin{itemize}
+    \item $c = 3.00 \times 10^8$ m/s
+    \item Frequencies in Hz (e.g., $f_{L1} = 1.57542 \times 10^9$ Hz)
+\end{itemize}
+\end{solution}
+\clearpage
+
+\question The reported quantity is called ``STEC''. What does this acronym stand for?
+
+\begin{solution}[2cm]
+\textbf{STEC = Slant Total Electron Content}
+
+This represents the total number of electrons integrated along the \textit{slanted} path from satellite to receiver. (Vertical TEC would be VTEC.)
+\end{solution}
+
+\end{questions}
+\subsection{Part IV -- Statistical Analysis in Excel}
+
+Using only your chosen satellite:
+
+\begin{questions} 
+
+\question Compute the mean and standard deviation of TEC. Report your results in TECU.
+
+\textit{Note: 1 TECU $= 10^{16}$ electrons/m$^2$}
+
+\begin{solution}[4cm]
+For Galileo-36:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Quantity} & \textbf{Raw Value} & \textbf{In TECU} \\
+\midrule
+Mean TEC & $3.26 \times 10^{17}$ electrons/m$^2$ & \textbf{32.6 TECU} \\
+Std Dev & $\sim 3 \times 10^{17}$ electrons/m$^2$ & \textbf{$\sim$30 TECU} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Excel formulas:}
+\begin{itemize}
+    \item Mean: \texttt{=AVERAGE(range)}
+    \item Std Dev: \texttt{=STDEV.S(range)}
+\end{itemize}
+\end{solution}
+
+\end{questions}
+
+\subsection{Part V -- Time Series Visualization}
+
+\begin{questions} 
+
+\question Create a plot in Excel with \texttt{id} on the x-axis and \texttt{TEC} on the y-axis. Paste or sketch your plot below.
+
+\begin{solution}[5cm]
+\textit{[Student pastes Excel plot here]}
+\end{solution}
+
+\question Briefly comment on the trend or variability you observe in your plot.
+
+\begin{solution}[3cm]
+TEC fluctuates around a roughly constant mean with rapid variations, indicating short-term ionospheric structure and measurement uncertainty. No strong monotonic trend is observed.
+\end{solution}
+
+\end{questions}
+
+\clearpage
+
+\subsection{Part VI -- Signal Quality (Carrier-to-Noise)}
+
+\begin{questions} 
+
+\question Compute the average values of \texttt{L1Cn0DbHz} and \texttt{L5Cn0DbHz} for your satellite.
+
+\begin{solution}[3cm]
+\begin{center}
+\begin{tabular}{lc}
+\toprule
+\textbf{Signal} & \textbf{Average C/N$_0$ (dB-Hz)} \\
+\midrule
+L1 & 40.43 \\
+L5 & 36.16 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{solution}
+
+\question Qualitatively describe the signal quality (Excellent / Good / Fair / Poor).
+
+\textit{Rule of thumb: $> 40$ dB-Hz = Excellent; $30$--$40$ dB-Hz = Good; $< 30$ dB-Hz = Poor}
+
+\begin{solution}[2cm]
+\begin{itemize}
+    \item L1: \textbf{Good--Excellent} (40.43 dB-Hz)
+    \item L5: \textbf{Good} (36.16 dB-Hz)
+\end{itemize}
+\end{solution}
+
+\end{questions}
+
+\subsection{Reflection}
+
+\begin{questions} 
+
+\question In 2--3 sentences: How does this dataset demonstrate that smartphones can be used as scientific instruments?
+
+\begin{solution}[4cm]
+This dataset shows that smartphones can measure precise signal timing from multiple GNSS satellites, detecting nanosecond-scale delays caused by ionospheric electrons. By analyzing dual-frequency signals, we can extract quantitative physical information (TEC) about Earth's upper atmosphere---turning a consumer device into a portable ionospheric sensor.
+\end{solution}
+
+\end{questions}
+
+\end{document}
