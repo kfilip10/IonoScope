@@ -129,4 +129,4 @@ Currently being investigated for viability
 ## Contact
 
 Kevin T. Filip  
-kevin.filip@westpoint.edu
+kfilip10@gmail.com
