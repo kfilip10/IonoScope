@@ -81,9 +81,9 @@ By comparing L1 and L5 signal transit times, the app estimates slant TEC through
 
 ## Low-Cost Persistent Sensing
 
-Example workflow:
+Currently being investigated for viability
 
-1. Deploy an inexpensive Android phone with clear sky view  
+1. Deploy an inexpensive Android phone with clear sky view, doesn't need a phone plan, just wifi access for data sharing.
 2. Collect data for ~24 hours to estimate satellite biases  
 3. Run multi-day logging sessions  
 4. Visualize ionospheric density externally (e.g., GIS tools)  
