@@ -123,6 +123,10 @@ Currently being investigated for viability
 
 - Slides, sample lab worksheet, and sample datasets included in the project repository  
 - GitHub: https://github.com/kfilip10/IonoScope  
+- https://www.unoosa.org/documents/pdf/psa/activities/2022/ISWI2022/s6_02.pdf This is another handy slide deck that describes the concepts and calculations.
+- https://www.swpc.noaa.gov/products/us-total-electron-content This is a NOAA product that describes real time TEC (total electron content) but also has some other links to describe the phenomenon.
+- https://www.nature.com/articles/s41586-024-08072-x This idea was also implemented differently in an article in Nature. Here they aggregated data from phones to measure the TEC across large geographic areas. 
+- https://gssc.esa.int/navipedia/index.php/Ionospheric_Delay This is a helpful source from the European Space Agency that describes the phenomenon in a little more detail. 
 
 ---
 
